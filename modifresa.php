@@ -3,10 +3,35 @@
 
 	<?php 
 
-		// Variables contenant les valeurs entrées par l'utilisateur
-		$nom = isset($_POST["nom"]) ? $_POST["nom"] : '';
-		$taille = isset($_POST["taille"]) ? $_POST["taille"] : '';
-		$duree = isset($_POST["duree"]) ? $_POST["duree"] : '';
+		// Vérifie si nous souhaitons faire ou modifier une réservation
+		if(isset($_GET['index'])) {	// Modification d'une réservation
+			$reservation_index = $_GET['index'];
+			$fichier = fopen("data.txt", "r");	// Ouverture du fichier pour récupérer les informations de la réservation
+
+			$index = 1;
+			$data = null;
+
+			while(!feof($fichier)) {
+				$ligne = fgets($fichier);
+				if($index == $reservation_index) {
+					$data = $ligne;
+					break;
+				}
+				$index++;
+			}
+			fclose($fichier);
+
+			if($data) {
+				$reservation = explode("|", $data);	// stockage de la réservation dans une variable
+				if(count($reservation) == 4) list($nom, $date, $taille, $duree) = $reservation;	// Création des 4 variables pour les 4 informations de la réservation
+			}
+		}
+		else {	// Ajout d'une réservation
+			// Variables contenant les valeurs entrées par l'utilisateur
+			$nom = isset($_POST["nom"]) ? $_POST["nom"] : '';
+			$taille = isset($_POST["taille"]) ? $_POST["taille"] : '';
+			$duree = isset($_POST["duree"]) ? $_POST["duree"] : '';
+		}
 		
 		$errors = []; // Tableau contenant les messages d'erreurs
 		
