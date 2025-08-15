@@ -89,7 +89,7 @@ main img {
 
 /* Début du CSS du fichier reservations.php */
 
-main .cards {
+.cards {
 	display: flex;
 	flex-wrap: wrap;
 	width: 80%;
@@ -99,7 +99,7 @@ main .cards {
 	justify-content: center;
 }
 
-main .card {
+.card {
 	width: 500px;
 	margin: 30px;
 	padding: 15px;

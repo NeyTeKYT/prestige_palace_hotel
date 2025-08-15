@@ -1,10 +1,12 @@
 <div>
-	<h1>Faire une Réservation</h1>
 
 	<?php 
 
 		// Vérifie si nous souhaitons faire ou modifier une réservation
 		if(isset($_GET['index'])) {	// Modification d'une réservation
+
+			echo "<h1>Modifier une Réservation</h1>";
+
 			$reservation_index = $_GET['index'];
 			$fichier = fopen("data.txt", "r");	// Ouverture du fichier pour récupérer les informations de la réservation
 
@@ -25,9 +27,20 @@
 				$reservation = explode("|", $data);	// stockage de la réservation dans une variable
 				if(count($reservation) == 4) list($nom, $date, $taille, $duree) = $reservation;	// Création des 4 variables pour les 4 informations de la réservation
 			}
+
+			// Format de l'affichage de la réservation
+			echo "<div class='w3-container w3-card-4 w3-theme-l4'>";
+				echo "<h3>Réservation n°$index</h3>";
+				echo '<img src="img/chambre.png" alt="Image de la chambre" style="width:20%">';
+				echo "<h4>Réservation au nom de <strong id='nom'><em>$nom</em></strong><br>
+				Effectuée le <strong>$date</strong><br>
+				Chambre pour <strong id='taille'>$taille personne(s) </strong><br>
+				Pour une durée de <strong id='duree'>$duree jour(s)</strong></h4>";
+			echo "</div>";
 		}
 		else {	// Ajout d'une réservation
 			// Variables contenant les valeurs entrées par l'utilisateur
+			echo "<h1>Faire une Réservation</h1>";
 			$nom = isset($_POST["nom"]) ? $_POST["nom"] : '';
 			$taille = isset($_POST["taille"]) ? $_POST["taille"] : '';
 			$duree = isset($_POST["duree"]) ? $_POST["duree"] : '';
