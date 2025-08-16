@@ -2,23 +2,23 @@
 
 	<?php 
 
-		if(isset($_GET['index'])) {	// Modification d'une réservation
+		// Modification d'une réservation
+		if(isset($_GET['index'])) {	
 
 			echo "<h1>Modifier une Réservation</h1>";
 
 			$reservation_index = $_GET['index'];
 			$fichier = fopen("data.txt", "r");	// Ouverture du fichier pour récupérer les informations de la réservation
-
-			$index = 1;
+			$current_index = 1;
 			$data = null;
 
-			while(!feof($fichier)) {
+			while(!feof($fichier)) {	// Parcours du fichier (lecture ligne par ligne)
 				$ligne = fgets($fichier);
-				if($index == $reservation_index) {
+				if($current_index == $reservation_index) {
 					$data = $ligne;
 					break;
 				}
-				$index++;
+				else $current_index++;
 			}
 			fclose($fichier);
 
@@ -29,7 +29,7 @@
 
 			// Format de l'affichage de la réservation
 			echo "<div class='w3-container w3-card-4 w3-theme-l4'>";
-				echo "<h3>Réservation n°$index</h3>";
+				echo "<h3>Réservation n°$current_index</h3>";
 				echo '<img src="img/chambre.png" alt="Image de la chambre" style="width:20%">';
 				echo "<h4>Réservation au nom de <strong id='nom'><em>$nom</em></strong><br>
 				Effectuée le <strong>$date</strong><br>
@@ -37,13 +37,13 @@
 				Pour une durée de <strong id='duree'>$duree jour(s)</strong></h4>";
 			echo "</div>";
 		}
-		else {	// Ajout d'une réservation
-			// Variables contenant les valeurs entrées par l'utilisateur
-			echo "<h1>Faire une Réservation</h1>";
-			$nom = isset($_POST["nom"]) ? $_POST["nom"] : '';
-			$taille = isset($_POST["taille"]) ? $_POST["taille"] : '';
-			$duree = isset($_POST["duree"]) ? $_POST["duree"] : '';
-		}
+
+		else echo "<h1>Faire une Réservation</h1>";	// Ajout d'une réservation
+			
+		// Variables contenant les informations de la réservation
+		$nom = isset($_POST["nom"]) ? $_POST["nom"] : '';
+		$taille = isset($_POST["taille"]) ? $_POST["taille"] : '';
+		$duree = isset($_POST["duree"]) ? $_POST["duree"] : '';
 		
 		$errors = []; // Tableau contenant les messages d'erreurs
 		
@@ -73,23 +73,33 @@
 			} 
 
 			else { // Tous les champs ont une valeur
-				if(($duree >= 1) && ($duree <= 15)) {
-					if((($nom >= 'A') && ($nom <= 'Z'))) {	// Un nom commence toujours par une majuscule
-						$reservation = $nom."|".date("d-m-Y")."|".$taille."|".$duree."\n";
-						$reservation = rtrim($reservation, "\n");
-						if(!isset($_GET['index'])) {	// Ajout d'une réservation
-							file_put_contents("data.txt", $reservation, FILE_APPEND);	
+				if(($duree >= 1) && ($duree <= 15)) {	// modifier la logique -> if(!($duree >= 1) && ($duree <= 15))
+					if((($nom >= 'A') && ($nom <= 'Z'))) {	// Un nom commence toujours par une majuscule	// modifier la logique 
+
+						$reservation = $nom."|".date("d-m-Y")."|".$taille."|".$duree."\n";	// Format de la réservation
+
+						// Ajout d'une réservation
+						if(!isset($_GET['index'])) {	
+							file_put_contents("data.txt", $reservation, FILE_APPEND);	// à la fin du fichier
+
+							// Format de la confirmation de réservation
 							echo "<div class='w3-container w3-green w3-center'>";
 							echo "<p>La réservation a bien été effectuée ! <br>
-							Vous avez réservé une chambre pour $taille personnes au nom de $nom pour $duree jours. <br>
-							Pour consulter votre réservation, allez dans l'onglet 'Liste des Réservations' via le menu latéral déroulant.";
+							Vous avez réservé une chambre pour <strong>$taille personnes</strong> au nom de <strong><em>$nom</em></strong> pour <strong>$duree jour(s)</strong>. <br>
+							Pour consulter votre réservation, allez dans l'onglet <a href='index.php?page=reservations.php'>Liste des Réservations</a>.";
 							echo "</div>";
 						}
-						else {	// Modification d'une réservation
-							$reservations = file("data.txt", FILE_IGNORE_NEW_LINES);	// $reservations est un tableau contenant toutes les réservations
+
+						// Modification d'une réservation
+						else {	
+							$reservations = file("data.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);	// tableau contenant toutes les réservations
+
 							if(isset($reservations[$reservation_index - 1])) {
-								$reservations[$reservation_index - 1] = $reservation;	// Remplace la ligne du tableau par la modification de la réservation
-								file_put_contents("data.txt", implode("\n", $reservations));	// Réecriture du fichier
+								$reservations[$reservation_index - 1] = $reservation;	// Remplace la ligne du tableau par la réservation modifiée
+
+								file_put_contents("data.txt", implode("\n", $reservations));
+
+								// Format de la modification de la réservation
 								echo "<div class='w3-container w3-green w3-center'>";
 								echo "<p>La réservation a bien été modifiée ! <br>
 								Pour consulter votre modification, allez dans l'onglet 'Liste des Réservations' via le menu latéral déroulant.";
@@ -97,20 +107,22 @@
 							}
 						}
 					}
-					else {
+					else { // modifier la logique 
 						echo "<div class='w3-container w3-orange w3-center'>";
 						$nomError = true;
 						echo "<p>Le nom que vous avez renseigné n'est pas correct.</p>";
 						echo "</div>";
 					}
 				} 
-				else {
+
+				else {	// modifier la logique 
 					echo "<div class='w3-container w3-orange w3-center'>";
 					$dureeError = true;
 					if ($duree < 1) echo "<p>Vous avez renseigné un nombre de jours inférieur à 1.</p>";
 					else echo "<p>Vous avez renseigné un nombre de jours supérieur à 15.</p>";
 					echo "</div>";
 				}
+
 			}
 		} 
 	?>
