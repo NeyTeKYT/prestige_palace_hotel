@@ -2,7 +2,6 @@
 
 	<?php 
 
-		// Vérifie si nous souhaitons faire ou modifier une réservation
 		if(isset($_GET['index'])) {	// Modification d'une réservation
 
 			echo "<h1>Modifier une Réservation</h1>";
@@ -76,16 +75,27 @@
 			else { // Tous les champs ont une valeur
 				if(($duree >= 1) && ($duree <= 15)) {
 					if((($nom >= 'A') && ($nom <= 'Z'))) {	// Un nom commence toujours par une majuscule
-						$fichier = fopen("data.txt", "a");
 						$reservation = $nom."|".date("d-m-Y")."|".$taille."|".$duree."\n";
-						fwrite($fichier, $reservation);
-						fclose($fichier);
-						
-						echo "<div class='w3-container w3-green w3-center'>";
-						echo "<p>La réservation a bien été effectuée ! <br>
-						Vous avez réservé une chambre pour $taille personnes au nom de $nom pour $duree jours. <br>
-						Pour consulter votre réservation, aller dans l'onglet 'Liste des Réservations' via le menu latéral déroulant.";
-						echo "</div>";
+						$reservation = rtrim($reservation, "\n");
+						if(!isset($_GET['index'])) {	// Ajout d'une réservation
+							file_put_contents("data.txt", $reservation, FILE_APPEND);	
+							echo "<div class='w3-container w3-green w3-center'>";
+							echo "<p>La réservation a bien été effectuée ! <br>
+							Vous avez réservé une chambre pour $taille personnes au nom de $nom pour $duree jours. <br>
+							Pour consulter votre réservation, allez dans l'onglet 'Liste des Réservations' via le menu latéral déroulant.";
+							echo "</div>";
+						}
+						else {	// Modification d'une réservation
+							$reservations = file("data.txt", FILE_IGNORE_NEW_LINES);	// $reservations est un tableau contenant toutes les réservations
+							if(isset($reservations[$reservation_index - 1])) {
+								$reservations[$reservation_index - 1] = $reservation;	// Remplace la ligne du tableau par la modification de la réservation
+								file_put_contents("data.txt", implode("\n", $reservations));	// Réecriture du fichier
+								echo "<div class='w3-container w3-green w3-center'>";
+								echo "<p>La réservation a bien été modifiée ! <br>
+								Pour consulter votre modification, allez dans l'onglet 'Liste des Réservations' via le menu latéral déroulant.";
+								echo "</div>";
+							}
+						}
 					}
 					else {
 						echo "<div class='w3-container w3-orange w3-center'>";
