@@ -85,7 +85,7 @@
 							Effectuée le <strong>$date</strong><br>
 							Chambre pour <strong id='taille'>$taille personne(s) </strong><br>
 							Pour une durée de <strong id='duree'>$duree jour(s)</strong></h4>";
-							echo "<button class='w3-button w3-orange'>Modifier</button>";
+							echo "<button class='w3-button w3-orange'><a href='index.php?page=modifresa.php&index=$index' title='modifresa.php'>Modifier</a></button>";	// ICI 
 							echo "<button class='w3-button w3-red'>Supprimer</button>";
 						echo "</div>";
 					echo "</div>";
