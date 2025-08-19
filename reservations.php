@@ -71,7 +71,8 @@
 			$reservations = file("data.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);	// Stockage des réservations dans un array
 
 			if(isset($reservations[$bookingIndex - 1])) {
-				unset($reservations[$bookingIndex - 1]);
+				unset($reservations[$bookingIndex - 1]);	// Remove reservation
+				$reservations = array_values($reservations);	// Reindex the array
 				file_put_contents("data.txt", implode("\n", $reservations));
 
 				// Format de l'affichage de la suppression de la réservation
@@ -94,6 +95,7 @@
 			while(!feof($fichier)) {	// Tant que le fichier n'est pas terminé
 
 				$donnees = fgets($fichier);
+				if(($donnees == false) && ($index == 0)) echo "<h2>Aucune réservation n'a été effectuée !</h2>";
 				$index = $index + 1;	// identifiant unique (index entier)
 				$reservation = explode("|", $donnees);	// stockage de la réservation dans une variable
 				
