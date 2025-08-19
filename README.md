@@ -29,10 +29,10 @@ Ce projet a été réalisé dans le cadre de l'**Unité d'Enseignement (UE) Dév
 
 # 🚀 Améliorations prévues 
 
-- Traduction du site (au moins en anglais et espagnol)
-- Système de choix de chambre avec plusieurs photos 
-- Proposition de suppléments à la réservation (spa, repas, transport à l'aéroport, ...)
-- Affichage de la météo en temps réel sur *Avignon*
-- Migration de `data.txt` vers une base de données *PostgreSQL*
-- Ajout d'un système d'authentification 
-- Notifications par mail
+- 🌍 Traduction du site (au moins en anglais et espagnol)
+- 🛏️ Système de choix de chambre avec plusieurs photos 
+- 🛎️ Proposition de suppléments à la réservation (spa, repas, transport à l'aéroport, ...)
+- ☀️ Affichage de la météo en temps réel sur *Avignon*
+- 🗄️ Migration de `data.txt` vers une base de données *PostgreSQL*
+- 🔐 Ajout d'un système d'authentification 
+- 🛎️ Notifications par mail
