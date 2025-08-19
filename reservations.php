@@ -57,6 +57,32 @@
 		</form>
 		
 	</div>
+
+	<?php
+
+		if(isset($_POST['deleteBooking'])) {
+			$bookingIndex = $_POST['bookingIndex'];	// Stockage de l'index de la réservation à supprimer dans une variable
+			deleteBooking($bookingIndex);
+		}
+
+		// Supprime une réservation
+		function deleteBooking($bookingIndex) {
+
+			$reservations = file("data.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);	// Stockage des réservations dans un array
+
+			if(isset($reservations[$bookingIndex - 1])) {
+				unset($reservations[$bookingIndex - 1]);	// Remove reservation
+				$reservations = array_values($reservations);	// Reindex the array
+				file_put_contents("data.txt", implode("\n", $reservations));
+
+				// Format de l'affichage de la suppression de la réservation
+				echo 	"<div class='w3-container w3-red w3-center'>
+							<p>La réservation n°$bookingIndex a bien été <strong>supprimée</strong> !</p>
+						</div>";
+			}
+		}
+
+	?>
 	
 	<!-- Affichage des réservations -->
 	<div class="cards">
@@ -69,6 +95,7 @@
 			while(!feof($fichier)) {	// Tant que le fichier n'est pas terminé
 
 				$donnees = fgets($fichier);
+				if(($donnees == false) && ($index == 0)) echo "<h2>Aucune réservation n'a été effectuée !</h2>";
 				$index = $index + 1;	// identifiant unique (index entier)
 				$reservation = explode("|", $donnees);	// stockage de la réservation dans une variable
 				
@@ -85,8 +112,13 @@
 							Effectuée le <strong>$date</strong><br>
 							Chambre pour <strong id='taille'>$taille personne(s) </strong><br>
 							Pour une durée de <strong id='duree'>$duree jour(s)</strong></h4>";
-							echo "<button class='w3-button w3-orange'><a href='index.php?page=modifresa.php&index=$index' title='modifresa.php'>Modifier</a></button>";	// ICI 
-							echo "<button class='w3-button w3-red'>Supprimer</button>";
+
+							echo "<button class='w3-button w3-orange'><a href='index.php?page=modifresa.php&index=$index' title='modifresa.php'>Modifier</a></button>";	
+							echo 	"<form method='post' action='index.php?page=reservations.php'>
+											<input type='hidden' name='bookingIndex' value='$index'>
+											<button type='submit' name='deleteBooking' class='w3-button w3-red'>Supprimer</button>
+									</form>";
+
 						echo "</div>";
 					echo "</div>";
 
